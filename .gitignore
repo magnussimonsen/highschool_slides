@@ -1,0 +1,16 @@
+# Typst compiled output
+*.pdf
+
+# Typst cache
+.typst-cache/
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*~

@@ -1,0 +1,1 @@
+typst watch --root . template/main.typ template/main.pdf
