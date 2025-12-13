@@ -8,12 +8,8 @@
   font-size-headers: 23pt,
   font-size-content: 20pt,
   footer_text: "",
+  equation_numbering: true, // Enable automatic equation numbering that starts on 1
 )
-
-
-
-// Enable automatic equation numbering
-#set math.equation(numbering: "(1)")
 
 // Blue header slide
 #slide(headercolor: blue, title: "Blue Header Slide")[
@@ -23,7 +19,7 @@
 ]
 
 // Red header slide
-#slide(headercolor: red, title: "Red Header Slide")[
+#slide(headercolor: red, title: "Red Header Slide", slide-main-font: "Comic Sans MS", slide-main-font-size: 1.2em)[
   - This is a slide with a red header
   - You can add lists
   - Or any other content

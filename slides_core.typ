@@ -13,6 +13,7 @@
 #let header-font-size-state = state("header-font-size", default-header-font-size)
 #let main-font-state = state("main-font", default-main-font)
 #let code-font-state = state("code-font", default-code-font)
+#let equation-numbering-state = state("equation-numbering", "(1)")
 #let reset-equation-state = state("reset-equation", true)
 #let footer-text-state = state("footer-text", "")
 
@@ -27,6 +28,7 @@
   font-size-content: default-content-font-size, // Default content font size. 
   footer_text: "", // Text to show in the footer. Empty by default.
   reset_equation_numbers_per_slide: true, // Reset equation numbering on each slide
+  equation_numbering: true, // Enable automatic equation numbering that starts on 1. Set to false to disable.
   body,
 ) = {
   header-font-size-state.update(font-size-headers)
@@ -34,8 +36,11 @@
   code-font-state.update(code-font)
   reset-equation-state.update(reset_equation_numbers_per_slide)
   footer-text-state.update(footer_text)
+  let numbering_format = if equation_numbering { "(1)" } else { none }
+  equation-numbering-state.update(numbering_format)
   set text(font: main-font, size: font-size-content)
   set page(paper: "presentation-" + ratio, fill: white)
+  set math.equation(numbering: numbering_format)
   body
 }
 
@@ -43,6 +48,10 @@
 #let slide(
   headercolor: blue,
   title: none,
+  slide-main-font: none,
+  slide-main-font-size: none,
+  slide-code-font: none,
+  slide-code-font-size: none,
   body,
 ) = {
   set page(
@@ -71,13 +80,21 @@
   set par(justify: true)
   set align(horizon)
 
-  // Reset equation numbering for each slide
+  // Apply slide-specific font settings
   context {
+    let font = if slide-main-font != none { slide-main-font } else { main-font-state.get() }
+    let size = if slide-main-font-size != none { slide-main-font-size } else { text.size }
+    let code-font-val = if slide-code-font != none { slide-code-font } else { code-font-state.get() }
+    let code-size = slide-code-font-size
+    set text(font: font, size: size)
+    show raw: set text(font: code-font-val, size: if code-size != none { code-size } else { size })
+
+    // Reset equation numbering for each slide
     if reset-equation-state.get() == true {
       counter(math.equation).update(0)
     }
-  }
 
-  v(0cm)
-  body
+    v(0cm)
+    body
+  }
 }

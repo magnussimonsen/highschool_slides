@@ -6,7 +6,7 @@
 #let cyan = rgb("#22d2d2")               // Tasks and exercises 
 #let magenta = rgb(138, 0, 138)          // Exploration tasks and deeper understanding
 #let yellow = rgb("C4853D")              // Warnings and cautions
-#let gray = rgb("#7c7c7c")               // Neutral color useful for code and equations
+#let gray = rgb("#7c7c7c")               // Neutral gray useful for code and equations
 #let white = rgb("FFFFFF")               // White color
 
 // Global variable for lighter versions of colors for focus boxes
