@@ -7,7 +7,7 @@
   //main-font: "Calibri",  // Default value is can be tweaked in slides_core.typ
   //code-font: "Consolas", // Default value is can be tweaked in slides_core.typ
   font-size-headers: 20pt, // Default value is can be tweaked in slides_core.typ
-  font-size-content: 16pt, // Default value is can be tweaked in slides_core.typ
+  font-size-content: 18pt, // Default value is can be tweaked in slides_core.typ
   footer_text: "Heggen videregående skole", // Text to show in the footer. Empty by default if not set.
   equation_numbering_globally: true, // Default set to "false" if not set. 
 )
