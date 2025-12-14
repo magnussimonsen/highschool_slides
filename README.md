@@ -2,27 +2,27 @@
 
 A simple, readable slide template for teaching and classroom presentations, built with [Typst](https://typst.app/).
 
-## What this is
+## Features
 
-- A small Typst “mini framework” for slides: consistent header styles, sensible typography defaults, and a few utilities.
-- Intended for education: clear layouts, easy code blocks, and math support.
+- **Education-focused**: Clear layouts, easy code blocks, and math support.
+- **Flexible Styling**: Customizable colors, fonts, and sizes.
+- **Utilities**: Built-in tools for columns, focus boxes, and equation numbering.
 
-## Quick start
+## Quick Start
 
-1. Install Typst.
-2. Compile the example deck:
+1.  **Install Typst**: Follow instructions at [typst.app](https://typst.app/).
+2.  **Check Fonts**: The template defaults to **Calibri** and **Consolas**. Ensure these are installed or configure your own (see [Configuration](#configuration)).
+    - List available fonts: `typst fonts`
+3.  **Run Example**:
+    ```bash
+    typst watch main.typ
+    ```
 
-```bash
-typst watch main.typ main.pdf
-```
+## Usage
 
-Edit the slides in `main.typ` and Typst will recompile on save.
+### 1. Global Configuration (`slides.with`)
 
-## How to use
-
-In your deck file (see `main.typ`):
-
-- Import the template and configure it:
+Initialize the template at the top of your `main.typ`:
 
 ```typst
 #import "slides_core.typ": *
@@ -31,41 +31,81 @@ In your deck file (see `main.typ`):
   ratio: "16-9",
   main-font: "Calibri",
   code-font: "Consolas",
-  font-size-headers: 20pt,
-  font-size-content: 19pt,
+  font-size-headers: 23pt,
+  font-size-content: 21pt,
   equation_numbering_globally: true,
+  footer_text: "My Course 101",
 )
 ```
 
-- Create slides with `slide(...)`:
+| Parameter | Default | Description |
+| :--- | :--- | :--- |
+| `ratio` | `"16-9"` | Aspect ratio of the slides. |
+| `main-font` | `"Calibri"` | Font for body text and headers. |
+| `code-font` | `"Consolas"` | Font for raw code blocks. |
+| `font-size-headers` | `23pt` | Size of header text. |
+| `font-size-content` | `21pt` | Size of body text. |
+| `focusbox-font-size` | `1em` | Relative size of text inside focus boxes. |
+| `table-font-size` | `1em` | Relative size of text inside tables. |
+| `footer_text` | `""` | Text to display in the footer (bottom left). |
+| `equation_numbering_globally` | `true` | Enable global equation numbering (1, 2, 3...). |
+| `reset_equation_numbers_per_slide` | `true` | Reset equation counter to 1 on each new slide. |
+
+### 2. Creating Slides (`slide`)
 
 ```typst
-#slide(headercolor: blue, title: "Example")[
-  Your content here.
+#slide(title: "My Slide Title", headercolor: blue)[
+  Content goes here.
 ]
 ```
 
-## Key features
+| Parameter | Default | Description |
+| :--- | :--- | :--- |
+| `title` | `none` | Title text in the header. If `none`, header is smaller. |
+| `headercolor` | `blue` | Color of the header bar (see `slides_utils.typ` for options). |
+| `center_x` | `false` | Center content horizontally. |
+| `center_y` | `true` | Center content vertically. |
+| `slide-main-font` | `none` | Override main font for this slide only. |
+| `slide-code-font` | `none` | Override code font for this slide only. |
+| `slide-equation-numbering` | `auto` | Override equation numbering for this slide (`true`/`false`). |
 
-- **Colored header styles** (blue/red/green/cyan/magenta/yellow/gray).
-- **Focus boxes** for code, examples, and highlights via `focusbox(...)`.
-- **Columns** via `cols(...)`, including fractional layouts like `(2fr, 1fr)`.
-- **Equation numbering**
-  - Global toggle in `slides.with(equation_numbering_globally: ...)`.
-  - Per-slide override using `slide-equation-numbering: true/false`.
-  - Optional reset per slide via `reset_equation_numbers_per_slide`.
-- **Code block sizing**: `focusbox(text-size: ...)` also affects fenced code blocks.
-- **Slide alignment controls**: `center_x` / `center_y` in `slide(...)`.
+### 3. Utilities
 
-## Project structure
+#### Focus Box (`focusbox`)
+Highlight important content like definitions or code.
 
-- `main.typ`: example presentation showcasing features
-- `slides_core.typ`: main API (`slides(...)`, `slide(...)`) and state-based configuration
-- `slides_utils.typ`: utilities (`focusbox(...)`, `cols(...)`, header color definitions)
-- `typst-cmd.txt`: a handy compile command
-- `fonts/`: notes about fonts
+```typst
+#focusbox(bg: yellow)[
+  Important warning!
+]
+```
 
-## Notes
+| Parameter | Default | Description |
+| :--- | :--- | :--- |
+| `bg` | `rgb("#F3F2F0")` | Background color. |
+| `text-size` | `auto` | Font size override. |
+| `width` | `auto` | Width of the box. |
+| `center_x` | `false` | Center text horizontally inside box. |
+| `center_y` | `false` | Center text vertically inside box. |
 
-- The template aims to stay **minimal**: a small set of knobs that are useful in real teaching.
-- Typst math syntax is used throughout (not LaTeX commands).
+#### Columns (`cols`)
+Layout content in columns.
+
+```typst
+#cols(columns: (2fr, 1fr))[
+  Left side (wider)
+][
+  Right side
+]
+```
+
+## Project Structure
+
+- `main.typ`: Your presentation file.
+- `slides_core.typ`: Core logic and state management. **Edit this to change default behaviors.**
+- `slides_utils.typ`: Design tokens (colors) and helper functions (`focusbox`, `cols`). **Edit this to add new colors or utilities.**
+
+## Maintenance
+
+- **Adding Colors**: Define new colors in `slides_utils.typ`.
+- **Changing Defaults**: Update default values in `slides_core.typ` (top of file).
