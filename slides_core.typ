@@ -5,13 +5,23 @@
 // ============================================================================
 
 // Fonts: Fallback lists ensure the template works across different OSs.
-// "Calibri" is standard on Windows, "Roboto" or "Liberation Sans" on Linux/Web.
-#let default-main-font = ("Calibri", "Roboto", "Liberation Sans", "Arial", "sans-serif")
-#let default-code-font = ("Consolas", "Roboto Mono", "Liberation Mono", "Courier New", "monospace")
+// "Liberation Sans" on Linux, "Calibri" on Windows, "Roboto" on Web.
+
+// WINDOWS fonts list (to get wrid of warnings)
+//#let default-main-font = ("Calibri", "Arial")
+//#let default-code-font = ("Consolas", "Courier New")
+
+// LINUX fonts list (to get rid of warnings)
+//#let default-main-font = ("Liberation Sans", "Noto Sans", "Arial")
+//#let default-code-font = ("Liberation Mono", "Noto Mono", "Courier New")
+
+// Dyslexia-friendly alternative (uncomment to use)
+#let default-main-font = ("Comic Sans MS", "OpenDyslexic")
+#let default-code-font = ("Comic Sans MS", "OpenDyslexic")
 
 // Font Sizes
-#let default-header-font-size = 23pt
-#let default-content-font-size = 21pt
+#let default-header-font-size = 22pt
+#let default-content-font-size = 20pt
 #let default-focusbox-font-size = 1em
 #let default-table-font-size = 1em
 

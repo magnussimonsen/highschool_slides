@@ -1,2 +1,6 @@
-# Watch and continuously recompile the example deck:
+Watch and continuously recompile the example deck:
 typst watch main.typ main.pdf
+
+Install fonts Ubuntu
+sudo apt update && sudo apt install fonts-opendyslexic
+sudo apt install ttf-mscorefonts-installer

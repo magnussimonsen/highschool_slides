@@ -4,11 +4,11 @@
 // Configure the presentation
 #show: slides.with(
   ratio: "16-9", // Default is "16-9" if not set. The ratio "4-3" is also supported.
-  main-font: "Calibri",  // Default value is "Calibri" if not set
-  code-font: "Consolas", // Default value is "Consolas" if not set
-  font-size-headers: 20pt, // 22pt is the default value if not set
-  font-size-content: 19pt, // 20pt is the default value if not set
-  footer_text: "", // Text to show in the footer. Empty by default if not set.
+  //main-font: "Calibri",  // Default value is can be tweaked in slides_core.typ
+  //code-font: "Consolas", // Default value is can be tweaked in slides_core.typ
+  font-size-headers: 20pt, // Default value is can be tweaked in slides_core.typ
+  font-size-content: 16pt, // Default value is can be tweaked in slides_core.typ
+  footer_text: "Heggen videregående skole", // Text to show in the footer. Empty by default if not set.
   equation_numbering_globally: true, // Default set to "false" if not set. 
 )
 
