@@ -1,5 +1,5 @@
 # Typst compiled output
-*.pdf
+# *.pdf
 
 # Typst cache
 .typst-cache/
