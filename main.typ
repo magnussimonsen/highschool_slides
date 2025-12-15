@@ -1,5 +1,5 @@
 #import "slides_core.typ": *
-#import "@preview/cetz:0.3.1"
+
 
 // Configure the presentation
 #show: slides.with(
