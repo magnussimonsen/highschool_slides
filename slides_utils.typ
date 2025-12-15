@@ -5,7 +5,7 @@
 #let blue = rgb("#0000FF").darken(35%)   // Primary theme color. Also used for definitions
 #let red = rgb("#FF0000").darken(35%)    // Statments, theorems, important notes
 #let green = rgb("#00FF00").darken(35%)  // Examples, practical application
-#let cyan = rgb("#22d2d2")               // Tasks and exercises 
+#let cyan = rgb("#22d2d2")               // Tasks and exercises
 #let magenta = rgb(138, 0, 138)          // Exploration tasks and deeper understanding
 #let yellow = rgb("C4853D")              // Warnings and cautions
 #let gray = rgb("#7c7c7c")               // Neutral gray useful for code and equations
@@ -98,3 +98,17 @@
 
   grid(columns: columns, gutter: gutter, ..bodies)
 }
+
+// ============================================================================
+// Animation Markers
+// ============================================================================
+
+// Pause marker for creating animation steps
+// Usage: #pause
+// Content after #pause will appear on the next subslide
+#let pause = metadata((kind: "slides-pause"))
+
+// Meanwhile marker for synchronous reveals
+// Usage: #meanwhile
+// Resets the pause counter to allow content to be revealed simultaneously
+#let meanwhile = metadata((kind: "slides-meanwhile"))

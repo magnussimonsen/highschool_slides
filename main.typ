@@ -4,8 +4,8 @@
 // Configure the presentation
 #show: slides.with(
   ratio: "16-9", // Default is "16-9" if not set. The ratio "4-3" is also supported.
-  //main-font: "Calibri",  // Default value is can be tweaked in slides_core.typ
-  //code-font: "Consolas", // Default value is can be tweaked in slides_core.typ
+  main-font: "Calibri",  // Default value is can be tweaked in slides_core.typ
+  code-font: "Consolas", // Default value is can be tweaked in slides_core.typ
   font-size-headers: 20pt, // Default value is can be tweaked in slides_core.typ
   font-size-content: 18pt, // Default value is can be tweaked in slides_core.typ
   footer_text: "Heggen videregående skole", // Text to show in the footer. Empty by default if not set.
@@ -314,4 +314,20 @@ You can include images using the `#figure` command:
       ```
     ]
   ]
+]
+
+
+#slide(headercolor: blue, title: "Test 3: Basic Pauses")[
+  - First point appears first
+  
+  #pause
+  
+  - Second point appears second
+  
+  #pause
+  
+  - Third point appears third
+  
+  #pause
+
 ]
