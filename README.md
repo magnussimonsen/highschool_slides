@@ -68,8 +68,58 @@ Initialize the template at the top of your `main.typ`:
 | `slide-main-font` | `none` | Override main font for this slide only. |
 | `slide-code-font` | `none` | Override code font for this slide only. |
 | `slide-equation-numbering` | `auto` | Override equation numbering for this slide (`true`/`false`). |
+| `repeat` | `auto` | Number of subslides (auto-detects from `#pause` markers). |
 
-### 3. Utilities
+### 3. Animations (`pause` and `meanwhile`)
+
+#### Pause (`#pause`)
+Create progressive reveals within a slide. Content after `#pause` appears on the next subslide.
+
+```typst
+#slide(title: "Step-by-Step Reveal")[
+  First, this appears.
+  
+  #pause
+  
+  Then this appears (subslide 2).
+  
+  #pause
+  
+  Finally this appears (subslide 3).
+]
+```
+
+**How it works:**
+- Each `#pause` marker creates a new subslide (duplicate page)
+- The slide system automatically counts pause markers and generates the required number of subslides
+- Content is progressively revealed by hiding elements that appear after pause markers not yet reached
+- The `process-content-for-subslide()` function walks through the slide's content tree, tracking which "step" each piece of content belongs to
+- On each subslide, only content from steps ≤ current subslide number is shown
+
+#### Meanwhile (`#meanwhile`)
+Reset the pause counter to create synchronized reveals (content appears at the same time).
+
+```typst
+#slide(title: "Synchronized Content")[
+  Left side content
+  
+  #pause
+  
+  This appears second
+  
+  #meanwhile
+  
+  This also appears at the same time as "This appears second"
+]
+```
+
+**Technical details:**
+- `#pause` is implemented as `metadata((kind: "slides-pause"))` - a metadata marker in the content tree
+- The `count-pauses()` function scans content to determine how many subslides are needed
+- Each pause increments a counter; `#meanwhile` resets it back to 1
+- The `repeat` parameter can override automatic detection if you need manual control
+
+### 4. Utilities
 
 #### Focus Box (`focusbox`)
 Highlight important content like definitions or code.
