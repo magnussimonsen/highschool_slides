@@ -4,12 +4,13 @@
 // Configure the presentation
 #show: slides.with(
   ratio: "16-9", // Default is "16-9" if not set. The ratio "4-3" is also supported.
-  //main-font: "Calibri",  // Default value is can be tweaked in slides_core.typ
-  //code-font: "Consolas", // Default value is can be tweaked in slides_core.typ
+  main-font: "Calibri",  // Default value is can be tweaked in slides_core.typ
+  code-font: "Consolas", // Default value is can be tweaked in slides_core.typ
   font-size-headers: 20pt, // Default value is can be tweaked in slides_core.typ
-  font-size-content: 18pt, // Default value is can be tweaked in slides_core.typ
+  font-size-content: 18pt, // vDefault value is can be tweaked in slides_core.typ
   footer_text: "Heggen videregående skole", // Text to show in the footer. Empty by default if not set.
-  equation_numbering_globally: true, // Default set to "false" if not set. 
+  equation_numbering_globally: true, // Default set to "false" if not set.
+  percent_lighter: 85%, // Control focusbox background lightness (default: 90%). Lower = darker.
 )
 
 // Blue header slide
@@ -20,30 +21,30 @@
 
   #focusbox(bg: gray, center_x: false, text-size: 0.7em)[
     ```typst
-    // Configure the presentation
-    #show: slides.with(
-      ratio: "16-9", // Default is "16-9" if not set
-      main-font: "Calibri",  // Default value is "Calibri" if not set
-      code-font: "Consolas", // Default value is "Consolas" if not set
-      font-size-headers: 20pt, // 22pt is the default value if not set
-      font-size-content: 19pt, // 20pt is the default value if not set
-      footer_text: "", // Text to show in the footer. Empty by default if not set.
-      equation_numbering_globally: true, // Default set to "false" if not set. 
-)
+        // Configure the presentation
+        #show: slides.with(
+          ratio: "16-9", // Default is "16-9" if not set
+          main-font: "Calibri",  // Default value is "Calibri" if not set
+          code-font: "Consolas", // Default value is "Consolas" if not set
+          font-size-headers: 20pt, // 22pt is the default value if not set
+          font-size-content: 19pt, // 20pt is the default value if not set
+          footer_text: "", // Text to show in the footer. Empty by default if not set.
+          equation_numbering_globally: true, // Default set to "false" if not set.
+    )
     ```
   ]
   *Note:* Example of a gray focusbox with smaller font size to show the global slides configuration. The lightening of the focusbox background color is controlled in `slides_utils.typ` with the variable 'percent_lighter'
 ]
-  
-#slide(headercolor: blue, title: "Including Images")[
-You can include images using the `#figure` command:
 
-```typst
-#figure(
-  image("Leonhard_Euler.jpg", width: 15%),
-  caption: [Leonhard Euler],
-) <img:LeonhardEuler>
-```
+#slide(headercolor: blue, title: "Including Images")[
+  You can include images using the `#figure` command:
+
+  ```typst
+  #figure(
+    image("Leonhard_Euler.jpg", width: 15%),
+    caption: [Leonhard Euler],
+  ) <img:LeonhardEuler>
+  ```
 
   #figure(
     image("Leonhard_Euler.jpg", width: 15%),
@@ -82,11 +83,11 @@ You can include images using the `#figure` command:
   Here's Taylor's theorem using Typst math syntax (not LaTeX):
 
   #focusbox(bg: red, center_x: false)[
-    *Taylor's theorem:* Let $k >= 1$ be an integer and let the function $f : RR -> RR$ be $k$ times differentiable at the point $a in RR$. 
-    
+    *Taylor's theorem:* Let $k >= 1$ be an integer and let the function $f : RR -> RR$ be $k$ times differentiable at the point $a in RR$.
+
     Then there exists a function $h_k : RR -> RR$ such that
     $ f(x) = sum_(i=0)^k (f^(i)(a))/(i!) (x - a)^i + h_k (x) (x - a)^k, $
-    
+
     and $lim_(x -> a) h_k (x) = 0.$
   ]
 
@@ -99,12 +100,12 @@ You can include images using the `#figure` command:
   #focusbox(bg: green, center_x: true, text-size: 1.1em, width: 90%)[
     *Example:* Taylor series for $e^x$ around $a = 0$:
 
-    
+
     Since $f(x) = e^x$, all derivatives are $f^(n)(x) = e^x$, and $f^(n)(0) = 1$ for all $n$.
-    
+
     Therefore, the Taylor series is:
     $ e^x = sum_(n=0)^infinity (x^n)/(n!) = 1 + x + x^2/(2!) + x^3/(3!) + x^4/(4!) + dots.h.c $
-    
+
     This series converges for all $x in RR$.
   ]
 
@@ -114,7 +115,7 @@ You can include images using the `#figure` command:
 // Green header slide
 #slide(headercolor: green, title: [Python code for calculating $e^x$ using the Taylor series])[
   Here’s a Python example that approximates $e^x$ using its Taylor series. *Note:* The code is shown in a white focusbox for readability and easy font-size control.
-  #focusbox(bg: white, center_x: false, width: 100% , text-size: 0.85em)[
+  #focusbox(bg: white, center_x: false, width: 100%, text-size: 0.85em)[
     ```python
     import math
     def exp_taylor(x, N=10):
@@ -140,23 +141,23 @@ You can include images using the `#figure` command:
     *Task*
     #focusbox(bg: cyan, center_x: false)[
 
-    Compute the integral:
-    $ integral x e^x dif x $
+      Compute the integral:
+      $ integral x e^x dif x $
     ]
   ][
     *Hint*
 
-      Use integration by parts:
+    Use integration by parts:
 
-      $ integral u dif v = u v - integral v dif u $
+    $ integral u dif v = u v - integral v dif u $
 
-      choose $u = x$ and $v' = e^x$, then $u' = 1 $ and $v = e^x$.
+    choose $u = x$ and $v' = e^x$, then $u' = 1$ and $v = e^x$.
   ]
 ]
 
 #slide(headercolor: yellow, title: "Centering Slide Content", center_x: true, center_y: false)[
   By default, slides are:
-  - Left-aligned horizontally 
+  - Left-aligned horizontally
   - Centered vertically
 
   This slide *overrides both to center content horizontally and vertically*.
@@ -164,7 +165,7 @@ You can include images using the `#figure` command:
   #focusbox(bg: gray, center_x: false, text-size: 0.85em)[
     ```typst
     #slide(headercolor: purple, title: "Centering Slide Content", center_x: true, center_y: false)[
-      
+
     ]
     ```
   ]
@@ -320,111 +321,111 @@ You can include images using the `#figure` command:
 // Test 1: Basic pause
 #slide(headercolor: blue, title: "Test 1: Basic Pause")[
   This is the first line.
-  
+
   #pause
-  
+
   This is the second line (appears after pause).
-  
+
   #pause
-  
+
   This is the third line (appears after second pause).
 
   #pause
-    
+
   This is the fourth line. (appears after third pause).
 ]
 
 // Test 2: Manual repeat specification
 #slide(headercolor: green, title: "Test 2: Manual Repeat", repeat: 3)[
   Content 1
-  
+
   #pause
-  
+
   Content 2
-  
+
   #pause
-  
+
   Content 3
 ]
 
 // Test 3: Bullet lists with pauses
 #slide(headercolor: red, title: "Test 3: Bullet Lists")[
   Here are the key points:
-  
+
   - First point is always visible
-  
+
   #pause
-  
+
   - Second point appears after first pause
-  
+
   #pause
-  
+
   - Third point appears after second pause
-  
+
   #pause
-  
+
   - Fourth point appears last
 ]
 
 // Test 4: Meanwhile marker
 #slide(headercolor: cyan, title: "Test 4: Meanwhile")[
   First section starts here.
-  
+
   #pause
-  
+
   First section continues.
-  
+
   #meanwhile
-  
+
   Second section starts (appears with first section).
-  
+
   #pause
-  
+
   Second section continues.
 ]
 
 // Test 5: Mixed content
 #slide(headercolor: magenta, title: "Test 5: Mixed Content")[
   *Introduction*
-  
+
   Some introductory text.
-  
+
   #pause
-  
+
   *Main Content*
-  
+
   #focusbox(bg: blue)[
     This is important content in a focusbox.
   ]
-  
+
   #pause
-  
+
   *Conclusion*
-  
+
   Final thoughts and summary.
 ]
 
 // Test 6: No pauses (should work as before)
 #slide(headercolor: gray, title: "Test 6: No Pauses")[
   This slide has no pauses.
-  
+
   All content appears at once.
-  
+
   This is the expected behavior for backward compatibility.
 ]
 
 // Test 7: Code blocks with pauses
 #slide(headercolor: yellow, title: "Test 7: Code with Pauses")[
   Let's look at some code:
-  
+
   #pause
-  
+
   ```python
   def hello():
       print("Hello, World!")
   ```
-  
+
   #pause
-  
+
   This function prints a greeting message.
 ]
