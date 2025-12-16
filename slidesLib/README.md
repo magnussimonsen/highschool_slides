@@ -200,7 +200,7 @@ MIT License - See LICENSE file for details
 
 ## Author
 
-Magnus Simonsen
+Magnus Simonsen & Claude Sonnet 4.5
 
 ## Repository
 
