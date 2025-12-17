@@ -1,4 +1,4 @@
-#import "slides_utils.typ": *
+#import "utils.typ": *
 
 // ============================================================================
 // Defaults & Constants
@@ -15,9 +15,25 @@
 //#let default-main-font = ("Liberation Sans", "Noto Sans", "Arial")
 //#let default-code-font = ("Liberation Mono", "Noto Mono", "Courier New")
 
-// Dyslexia-friendly alternative (uncomment to use)
-#let default-main-font = ("Comic Neue", "OpenDyslexic")
-#let default-code-font = ("Comic Neue", "OpenDyslexic")
+// Cross-platform defaults.
+// Keep these as *fallback lists* so the template works across OSes without
+// requiring users to install specific fonts.
+#let default-main-font = (
+  "Calibri",
+  "Arial",
+  "Liberation Sans",
+  "Noto Sans",
+  "Roboto",
+)
+
+#let default-code-font = (
+  "Consolas",
+  "Courier New",
+  "Liberation Mono",
+  "Noto Mono",
+  "Roboto Mono",
+  "DejaVu Sans Mono",
+)
 
 // Font Sizes
 #let default-header-font-size = 22pt
@@ -56,89 +72,98 @@
 // Animation Helper Functions
 // ============================================================================
 
-// Count pause markers in content
-#let count-pauses(body-content) = {
-  let pause-count = 0
-  let max-count = 0
+// Determine whether a content item is a marker.
+// Returns one of: "pause", "meanwhile", none.
+#let marker-kind(item) = {
+  if type(item) != content { return none }
+  if item.func() != metadata { return none }
+  if type(item.value) != dictionary { return none }
+  let kind = item.value.at("kind", default: none)
+  if kind == "slides-pause" { return "pause" }
+  if kind == "slides-meanwhile" { return "meanwhile" }
+  none
+}
 
-  // Walk through content
-  if type(body-content) == content and body-content.has("children") {
-    for child in body-content.children {
-      if type(child) == content {
-        if child.func() == metadata and type(child.value) == dictionary {
-          let kind = child.value.at("kind", default: none)
-          if kind == "slides-pause" {
-            pause-count += 1
-            max-count = calc.max(max-count, pause-count)
-          } else if kind == "slides-meanwhile" {
-            max-count = calc.max(max-count, pause-count)
-            pause-count = 1
-          }
-        }
-      }
+// Count pause markers in content.
+// The `#meanwhile` marker starts a new "track" that begins at the *current*
+// subslide (not at 1), so content after it appears alongside the current step.
+#let count-pauses(body-content) = {
+  if type(body-content) != content or not body-content.has("children") {
+    return 1
+  }
+
+  // Track semantics:
+  // - `track-offset`: the global step number the current track starts at.
+  // - `local-step`: the step number within the track (1-based).
+  let track-offset = 1
+  let local-step = 1
+  let max-step = 1
+
+  for child in body-content.children {
+    let kind = marker-kind(child)
+
+    if kind == "pause" {
+      local-step += 1
+      max-step = calc.max(max-step, track-offset + local-step - 1)
+    } else if kind == "meanwhile" {
+      // Start a new track at the *current* global step.
+      track-offset = track-offset + local-step - 1
+      local-step = 1
+      max-step = calc.max(max-step, track-offset)
     }
   }
 
-  calc.max(1, max-count + 1)
+  max-step
 }
 
 // Process content for a specific subslide
 // Hide content that appears after pauses not yet reached
 #let process-content-for-subslide(body-content, target-subslide) = {
-  // Helper to check if item is a pause/meanwhile marker
-  let is-pause-marker(item) = {
-    if type(item) != content { return (false, none) }
-    if item.func() != metadata { return (false, none) }
-    if type(item.value) != dictionary { return (false, none) }
-    let kind = item.value.at("kind", default: none)
-    if kind == "slides-pause" { return (true, "pause") }
-    if kind == "slides-meanwhile" { return (true, "meanwhile") }
-    return (false, none)
-  }
-
-  // Process sequence content by walking through children
-  let current-step = 1
-  let parts = ()
-  let current-part = ()
-
-  if type(body-content) == content and body-content.has("children") {
-    for child in body-content.children {
-      let (is-marker, marker-type) = is-pause-marker(child)
-
-      if is-marker {
-        if marker-type == "pause" {
-          if current-part.len() > 0 {
-            parts.push((step: current-step, content: current-part.sum(default: [])))
-            current-part = ()
-          }
-          current-step += 1
-        } else if marker-type == "meanwhile" {
-          if current-part.len() > 0 {
-            parts.push((step: current-step, content: current-part.sum(default: [])))
-            current-part = ()
-          }
-          current-step = 1
-        }
-      } else {
-        current-part.push(child)
-      }
-    }
-  } else {
-    // No children, return as-is
+  if type(body-content) != content or not body-content.has("children") {
     return body-content
   }
 
-  // Add remaining content
-  if current-part.len() > 0 {
-    parts.push((step: current-step, content: current-part.sum(default: [])))
+  // Same semantics as in `count-pauses`.
+  let track-offset = 1
+  let local-step = 1
+  let current-step = track-offset + local-step - 1
+
+  let parts = ()
+  let current-part = ()
+
+  // Flush accumulated content into `parts` under the current global step.
+  let flush() = {
+    if current-part.len() > 0 {
+      parts.push((step: current-step, content: current-part.sum(default: [])))
+      current-part = ()
+    }
   }
 
-  // If no parts (no pauses found), return original content
+  for child in body-content.children {
+    let kind = marker-kind(child)
+
+    if kind == "pause" {
+      flush()
+      local-step += 1
+      current-step = track-offset + local-step - 1
+    } else if kind == "meanwhile" {
+      flush()
+      track-offset = current-step
+      local-step = 1
+      current-step = track-offset
+    } else {
+      current-part.push(child)
+    }
+  }
+
+  flush()
+
+  // If there were no pauses/meanwhiles, preserve original content.
   if parts.len() == 0 {
     return body-content
   }
 
-  // Combine parts that should be visible at target-subslide
+  // Combine parts that should be visible at `target-subslide`.
   let visible = ()
   for part in parts {
     if part.step <= target-subslide {
@@ -146,16 +171,28 @@
     }
   }
 
-  if visible.len() == 0 {
-    return []
-  }
-
-  visible.sum(default: [])
+  if visible.len() == 0 { [] } else { visible.sum(default: []) }
 }
 
 // ============================================================================
 // Main Configuration (Global)
 // ============================================================================
+
+// Convert a percentage-like value into a Typst ratio.
+// Accepts either a ratio (e.g. `90%`) or a float/decimal (e.g. `0.9`).
+#let as-ratio(value) = {
+  if type(value) == ratio {
+    value
+  } else if type(value) == float or type(value) == decimal {
+    value * 100%
+  } else {
+    panic("Expected a ratio like 90% (or a float like 0.9).")
+  }
+}
+
+// Pause / meanwhile markers are detected only at the top-level of the slide body.
+// If you place them inside nested structures (lists, grids, blocks, etc.), the
+// auto-repeat detection will not see them.
 
 #let slides(
   ratio: "16-9",
@@ -165,23 +202,73 @@
   font-size-content: default-content-font-size,
   focusbox-font-size: default-focusbox-font-size,
   table-font-size: default-table-font-size,
-  footer_text: "",
-  reset_equation_numbers_per_slide: true,
-  equation_numbering_globally: true,
-  percent_lighter: 90%,
+  // Back-compat names (underscored)
+  footer_text: none,
+  reset_equation_numbers_per_slide: none,
+  equation_numbering_globally: none,
+  percent_lighter: none,
+
+  // Preferred names (hyphenated)
+  footer-text: none,
+  reset-equation-numbers-per-slide: none,
+  equation-numbering-globally: none,
+  percent-lighter: none,
   body,
 ) = {
+  // Resolve aliases (panic only if the user provides both).
+  if footer_text != none and footer-text != none {
+    panic("Use either footer_text or footer-text, not both.")
+  }
+  if reset_equation_numbers_per_slide != none and reset-equation-numbers-per-slide != none {
+    panic("Use either reset_equation_numbers_per_slide or reset-equation-numbers-per-slide, not both.")
+  }
+  if equation_numbering_globally != none and equation-numbering-globally != none {
+    panic("Use either equation_numbering_globally or equation-numbering-globally, not both.")
+  }
+  if percent_lighter != none and percent-lighter != none {
+    panic("Use either percent_lighter or percent-lighter, not both.")
+  }
+
+  let footer = if footer-text != none { footer-text } else if footer_text != none { footer_text } else { "" }
+  let reset-eq = if reset-equation-numbers-per-slide != none {
+    reset-equation-numbers-per-slide
+  } else if reset_equation_numbers_per_slide != none {
+    reset_equation_numbers_per_slide
+  } else {
+    true
+  }
+  let global-eq = if equation-numbering-globally != none {
+    equation-numbering-globally
+  } else if equation_numbering_globally != none {
+    equation_numbering_globally
+  } else {
+    true
+  }
+  let lighter = if percent-lighter != none {
+    percent-lighter
+  } else if percent_lighter != none {
+    percent_lighter
+  } else {
+    90%
+  }
+
+  // Validate values (only affects invalid inputs).
+  let lighter-ratio = as-ratio(lighter)
+  if lighter-ratio < 0% or lighter-ratio > 100% {
+    panic("percent-lighter must be between 0% and 100%.")
+  }
+
   // Update global state with user configuration
   state-header-font-size.update(font-size-headers)
   state-main-font.update(main-font)
   state-code-font.update(code-font)
   state-focusbox-font-size.update(focusbox-font-size)
   state-table-font-size.update(table-font-size)
-  state-reset-equation.update(reset_equation_numbers_per_slide)
-  state-footer-text.update(footer_text)
-  state-percent-lighter.update(percent_lighter)
+  state-reset-equation.update(reset-eq)
+  state-footer-text.update(footer)
+  state-percent-lighter.update(lighter-ratio)
 
-  let numbering_format = if equation_numbering_globally { "(1)" } else { none }
+  let numbering_format = if global-eq { "(1)" } else { none }
   state-equation-numbering.update(numbering_format)
 
   // Apply global document settings
@@ -197,10 +284,17 @@
 // ============================================================================
 
 #let slide(
-  headercolor: blue,
+  // Back-compat names
+  headercolor: none,
   title: none,
-  center_x: false,
-  center_y: true,
+  center_x: none,
+  center_y: none,
+
+  // Preferred names
+  header-color: none,
+  center-x: none,
+  center-y: none,
+
   slide-main-font: none,
   slide-main-font-size: none,
   slide-code-font: none,
@@ -209,11 +303,30 @@
   repeat: auto, // NEW: Number of subslides (auto = auto-detect from pauses)
   body,
 ) = {
+  // Resolve aliases (panic only if the user provides both).
+  if headercolor != none and header-color != none {
+    panic("Use either headercolor or header-color, not both.")
+  }
+  if center_x != none and center-x != none {
+    panic("Use either center_x or center-x, not both.")
+  }
+  if center_y != none and center-y != none {
+    panic("Use either center_y or center-y, not both.")
+  }
+
+  let headercolor = if header-color != none { header-color } else if headercolor != none { headercolor } else { blue }
+  let center_x = if center-x != none { center-x } else if center_x != none { center_x } else { false }
+  let center_y = if center-y != none { center-y } else if center_y != none { center_y } else { true }
+
   // Determine number of repetitions
   let actual-repeat = if repeat == auto {
     count-pauses(body)
   } else {
     repeat
+  }
+
+  if type(actual-repeat) != int or actual-repeat < 1 {
+    panic("repeat must be auto or a positive integer.")
   }
 
   // Generate one page for each subslide
@@ -245,7 +358,13 @@
         header: [], // We draw the header manually in the background to avoid margin issues
         margin: (x: layout-margin-x, top: top-margin, bottom: layout-margin-bottom),
         background: {
-          place(slide-header(title, headercolor, state-header-font-size.get()))
+          place(slide-header(
+            title,
+            headercolor,
+            state-header-font-size.get(),
+            inset: layout-header-inset,
+            height: header-em-height,
+          ))
         },
         footer: [
           #set text(size: 12pt, fill: gray)

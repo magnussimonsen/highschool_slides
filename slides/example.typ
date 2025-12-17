@@ -1,5 +1,5 @@
 // slides_example.typ - Short example showcasing slide template features
-#import "slides_lib.typ": *
+#import "lib.typ": *
 
 #show: slides.with(
   ratio: "16-9",

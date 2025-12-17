@@ -4,15 +4,15 @@
 // A simple and clean slides template for Typst presentations with pause animations
 //
 // Author: Magnus Simonsen
-// Repository: https://github.com/magnussimonsen/slides
+// Repository: https://github.com/magnussimonsen/highschool_slides
 // License: MIT
 //
 // Usage:
-//   #import "slidesLib/slides_lib.typ": *
+//   #import "@preview/classroom-deck:0.1.0": *
 //
 //   #show: slides.with(
 //     ratio: "16-9",
-//     footer_text: "My Presentation",
+//     footer_text: "My Presentation", // or footer-text
 //   )
 //
 //   #slide(title: "First Slide")[
@@ -25,10 +25,10 @@
 // ============================================================================
 
 // Import and re-export core functionality
-#import "slides_core.typ": slide, slides
+#import "core.typ": slide, slides
 
 // Import and re-export utilities
-#import "slides_utils.typ": (
+#import "utils.typ": (
   // Layout utilities
   focusbox,
   cols,

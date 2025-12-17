@@ -1,4 +1,4 @@
-# Slides - Simple Typst Presentation Template
+# Classroom Deck - Simple Typst Presentation Template
 
 A clean and simple slides template for Typst with built-in pause animations.
 
@@ -17,7 +17,10 @@ A clean and simple slides template for Typst with built-in pause animations.
 ## Quick Start
 
 ```typst
-#import "slides_lib.typ": *
+#import "@preview/classroom-deck:0.1.0": *
+
+// For local development (in this repository), you can instead use:
+// #import "slides_lib.typ": *
 
 // Configure the presentation
 #show: slides.with(
@@ -114,6 +117,8 @@ Pre-defined colors for headers and focusboxes:
 
 ## Animation Examples
 
+Note: `#pause` and `#meanwhile` are detected only at the *top level* of a slide’s body. If you put them inside nested structures (lists, grids, blocks, etc.), auto-detection may not see them.
+
 ### Basic Pause
 
 ```typst
@@ -197,6 +202,8 @@ slidesLib/
 ## License
 
 MIT License - See LICENSE file for details
+
+https://github.com/magnussimonsen/highschool_slides
 
 ## Author
 

@@ -18,7 +18,7 @@ This is a simple, education-focused presentation template for Typst, designed fo
 ## Import and Setup
 
 ```typst
-#import "slides_lib.typ": *
+#import "@preview/classroom-deck:0.1.0": *
 
 #show: slides.with(
   ratio: "16-9",                      // or "4-3"
@@ -31,6 +31,8 @@ This is a simple, education-focused presentation template for Typst, designed fo
   percent_lighter: 90%,               // Focusbox background lightness (0-100%)
 )
 ```
+
+Note: `#pause` and `#meanwhile` markers are detected only at the top level of a slide’s body.
 
 ## Available Functions
 

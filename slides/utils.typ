@@ -10,25 +10,35 @@
 #let yellow = rgb("C4853D")              // Warnings and cautions
 #let gray = rgb("#7c7c7c")               // Neutral gray useful for code and equations
 #let white = rgb("FFFFFF")               // White color
-// Global variable for lighter versions of colors for focus boxes
-#let percent_lighter = 90%
 
 // ============================================================================
 // Internal Helpers
 // ============================================================================
 
-// Creates a colored header box for slides
-#let slide-header(title, color, header-font-size) = context {
+// Creates a colored header box for slides.
+// The extra named parameters exist so slides_core can supply the same
+// geometry constants it uses for layout calculations.
+#let slide-header(
+  title,
+  color,
+  header-font-size,
+  inset: .6cm,
+  height: auto,
+) = context {
   let font-size = header-font-size
 
   set text(size: font-size)
-  let header-height = if title != none { 1.6em } else { 1.5em }
+  let header-height = if height == auto {
+    if title != none { 1.6em } else { 1.5em }
+  } else {
+    height
+  }
 
   rect(
     fill: color,
     width: 100%,
     height: header-height,
-    inset: .6cm,
+    inset: inset,
     if title != none {
       text(white, weight: "regular", size: font-size)[
         #h(.1cm) #title
@@ -51,7 +61,10 @@
   width: auto,
   content,
 ) = context {
-  let bg-color = bg.lighten(percent_lighter)
+  // Avoid importing slides_core here (would create a circular import).
+  // Read the configured value from state instead.
+  let lighten = state("percent-lighter", 90%).get()
+  let bg-color = bg.lighten(lighten)
   let center_x_str = if center_x { center } else { left }
   let center_y_str = if center_y { horizon } else { top }
 

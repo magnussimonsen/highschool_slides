@@ -1,12 +1,12 @@
 [package]
-name = "slides"
+name = "classroom-deck"
 version = "0.1.0"
-entrypoint = "slides_lib.typ"
+entrypoint = "lib.typ"
 authors = ["Magnus Simonsen"]
 license = "MIT"
-description = "A clean and simple slides template for Typst with built-in pause animations"
-homepage = "https://github.com/magnussimonsen/slides"
-repository = "https://github.com/magnussimonsen/slides"
+description = "Clean classroom slides with pause animations."
+homepage = "https://github.com/magnussimonsen/highschool_slides"
+repository = "https://github.com/magnussimonsen/highschool_slides"
 keywords = ["presentation", "slides", "template", "animation"]
 categories = ["presentation"]
 disciplines = ["education"]
