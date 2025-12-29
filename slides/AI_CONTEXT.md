@@ -335,9 +335,9 @@ _Italic text_
 
 The template consists of:
 
-- `slides_lib.typ` - Main entry point (import this)
-- `slides_core.typ` - Core slide functionality
-- `slides_utils.typ` - Utility functions
+- `lib.typ` - Main entry point (import this)
+- `core.typ` - Core slide functionality
+- `utils.typ` - Utility functions & Animation logic
 - `README.md` - Documentation
 - `LICENSE` - MIT License
 
@@ -377,6 +377,35 @@ Use a focusbox:
 
 ```typst
 #focusbox(bg: blue)[Content with blue background]
+```
+
+**"How do I put something in a frame / add a border?"**
+
+For a simple border, wrap the content in a `#box` (works great inside table cells too):
+
+```typst
+#box(
+  stroke: 1pt,
+  inset: 0.4em,
+  radius: 0.2em,
+)[
+  - Spesifikke lærevansker (dysleksi, dyskalkuli, ADHD, psykososiale utf., mv.)
+  - Manglende grunnleggende ferdigheter
+  - Mister motivasjon
+  - Høyt læringspotensial
+]
+```
+
+Example inside a `#table` cell:
+
+```typst
+[#box(stroke: 1pt, inset: 0.35em, radius: 0.2em)[*Lav måloppnåelse*]],
+[
+  #box(stroke: 1pt, inset: 0.4em, radius: 0.2em)[
+    - Punkt 1
+    - Punkt 2
+  ]
+],
 ```
 
 **"How do I make bullets appear one by one?"**

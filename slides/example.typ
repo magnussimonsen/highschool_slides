@@ -3,17 +3,16 @@
 
 #show: slides.with(
   ratio: "16-9",
-  main-font: "Calibri", // Default value is can be tweaked in slides_core.typ
-  code-font: "Consolas", // Default value is can be tweaked in slides_core.typ
-  font-size-headers: 20pt, // Default value is can be tweaked in slides_core.typ
-  font-size-content: 16pt, // Default value is can be tweaked in slides_core.typ
+  main-font: "Calibri", // Default value is can be tweaked in core.typ
+  code-font: "Consolas", // Default value is can be tweaked in core.typ
+  font-size-headers: 20pt, // Default value is can be tweaked in core.typ
+  font-size-content: 16pt, // Default value is can be tweaked in core.typ
   footer_text: "Slides Demo", // Default value is emty string if not set
   equation_numbering_globally: true, // Default set to "false" if not set.
-  percent_lighter: 90%, // Color lightness for focusboxes (default: 90%)
-  // The defult colors are: blue, red, green, cyan, magenta, yellow, gray, white, and can be used directly, and they can be customized in slides_utils.typ
+  // The defult colors are: blue, red, green, cyan, magenta, yellow, gray, white, and can be used directly, and they can be customized in utils.typ
 )
 
-// ============ SLIDE 1: Focus Boxes and Equations ============
+// SLIDE 1: Focus Boxes and Equations
 #slide(headercolor: blue, title: "Focus Boxes and Equations")[
   #focusbox(bg: green, width: 60%, center_x: true, center_y: true)[
     This is a x- and y-centerd *green focusbox* with 60% width and an unnumbered equation:
@@ -76,7 +75,7 @@
   ]
 ]
 
-// ============ SLIDE 2: Two Columns - Table and Image ============
+// SLIDE 2: Two Columns - Table and Image
 #slide(headercolor: green, title: "Data and Visualization")[
   #cols(columns: (1fr, 2fr))[
     // Column 1: Data table
@@ -109,7 +108,7 @@
   ]
 ]
 
-// ============ SLIDE 3: Python Code ============
+// SLIDE 3: Python Code
 #slide(headercolor: red, title: "Python Code", center_y: false)[
 We can embedd Python code for the simulation of an SIRS epidemiological model, using typst built-in code blocks:
   #focusbox(bg: yellow, width: 100%, text-size: 0.9em)[
@@ -136,3 +135,31 @@ We can embedd Python code for the simulation of an SIRS epidemiological model, u
 ]
 
 
+
+// SLIDE 4: Harmonic Oscillator (Gray Theme)
+#slide(headercolor: gray, center_y: false, title: "Harmonic Oscillator")[
+  #cols(columns: (1fr, 1.2fr))[
+    We can model the motion of a simple harmonic oscillator using the following equation:
+
+    #focusbox(bg: gray, width: 100%, center_x: true)[
+      $ x(t) = A sin(omega t - phi) $
+    ]
+
+    Where:
+    - $A$ is the amplitude
+    - $omega$ is the angular frequency
+    - $phi$ is the phase offset
+  ][
+    #pause
+    *Total Energy:*
+    The total mechanical energy $E$ is the sum of kinetic and potential energy:
+    $ E = K + U = 1/2 m v^2 + 1/2 k x^2 $
+
+    #pause
+    
+    Substituting $v(t) = dot(x)(t)$ and using $k = m omega^2$:
+    $ E &= 1/2 m (A omega cos(omega t))^2 + 1/2 (m omega^2) (A sin(omega t))^2 \
+        &= 1/2 m omega^2 A^2 (cos^2(omega t) + sin^2(omega t)) \
+        &= 1/2 k A^2 $
+  ]
+]

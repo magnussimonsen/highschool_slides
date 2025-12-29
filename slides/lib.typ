@@ -44,4 +44,12 @@
   yellow,
   gray,
   white,
+  // Lightened color variants
+  blue_light,
+  red_light,
+  green_light,
+  cyan_light,
+  magenta_light,
+  yellow_light,
+  gray_light,
 )

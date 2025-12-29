@@ -1,8 +1,8 @@
 #import "utils.typ": *
 
-// ============================================================================
+// 
 // Defaults & Constants
-// ============================================================================
+// 
 
 // Fonts: Fallback lists ensure the template works across different OSs.
 // "Liberation Sans" on Linux, "Calibri" on Windows, "Roboto" on Web.
@@ -66,113 +66,7 @@
 #let state-focusbox-font-size = state("focusbox-font-size", default-focusbox-font-size)
 #let state-table-font-size = state("table-font-size", default-table-font-size)
 #let state-current-subslide = state("current-subslide", 1)
-#let state-percent-lighter = state("percent-lighter", 90%)
 
-// ============================================================================
-// Animation Helper Functions
-// ============================================================================
-
-// Determine whether a content item is a marker.
-// Returns one of: "pause", "meanwhile", none.
-#let marker-kind(item) = {
-  if type(item) != content { return none }
-  if item.func() != metadata { return none }
-  if type(item.value) != dictionary { return none }
-  let kind = item.value.at("kind", default: none)
-  if kind == "slides-pause" { return "pause" }
-  if kind == "slides-meanwhile" { return "meanwhile" }
-  none
-}
-
-// Count pause markers in content.
-// The `#meanwhile` marker starts a new "track" that begins at the *current*
-// subslide (not at 1), so content after it appears alongside the current step.
-#let count-pauses(body-content) = {
-  if type(body-content) != content or not body-content.has("children") {
-    return 1
-  }
-
-  // Track semantics:
-  // - `track-offset`: the global step number the current track starts at.
-  // - `local-step`: the step number within the track (1-based).
-  let track-offset = 1
-  let local-step = 1
-  let max-step = 1
-
-  for child in body-content.children {
-    let kind = marker-kind(child)
-
-    if kind == "pause" {
-      local-step += 1
-      max-step = calc.max(max-step, track-offset + local-step - 1)
-    } else if kind == "meanwhile" {
-      // Start a new track at the *current* global step.
-      track-offset = track-offset + local-step - 1
-      local-step = 1
-      max-step = calc.max(max-step, track-offset)
-    }
-  }
-
-  max-step
-}
-
-// Process content for a specific subslide
-// Hide content that appears after pauses not yet reached
-#let process-content-for-subslide(body-content, target-subslide) = {
-  if type(body-content) != content or not body-content.has("children") {
-    return body-content
-  }
-
-  // Same semantics as in `count-pauses`.
-  let track-offset = 1
-  let local-step = 1
-  let current-step = track-offset + local-step - 1
-
-  let parts = ()
-  let current-part = ()
-
-  // Flush accumulated content into `parts` under the current global step.
-  let flush() = {
-    if current-part.len() > 0 {
-      parts.push((step: current-step, content: current-part.sum(default: [])))
-      current-part = ()
-    }
-  }
-
-  for child in body-content.children {
-    let kind = marker-kind(child)
-
-    if kind == "pause" {
-      flush()
-      local-step += 1
-      current-step = track-offset + local-step - 1
-    } else if kind == "meanwhile" {
-      flush()
-      track-offset = current-step
-      local-step = 1
-      current-step = track-offset
-    } else {
-      current-part.push(child)
-    }
-  }
-
-  flush()
-
-  // If there were no pauses/meanwhiles, preserve original content.
-  if parts.len() == 0 {
-    return body-content
-  }
-
-  // Combine parts that should be visible at `target-subslide`.
-  let visible = ()
-  for part in parts {
-    if part.step <= target-subslide {
-      visible.push(part.content)
-    }
-  }
-
-  if visible.len() == 0 { [] } else { visible.sum(default: []) }
-}
 
 // ============================================================================
 // Main Configuration (Global)
@@ -206,13 +100,10 @@
   footer_text: none,
   reset_equation_numbers_per_slide: none,
   equation_numbering_globally: none,
-  percent_lighter: none,
-
   // Preferred names (hyphenated)
   footer-text: none,
   reset-equation-numbers-per-slide: none,
   equation-numbering-globally: none,
-  percent-lighter: none,
   body,
 ) = {
   // Resolve aliases (panic only if the user provides both).
@@ -224,9 +115,6 @@
   }
   if equation_numbering_globally != none and equation-numbering-globally != none {
     panic("Use either equation_numbering_globally or equation-numbering-globally, not both.")
-  }
-  if percent_lighter != none and percent-lighter != none {
-    panic("Use either percent_lighter or percent-lighter, not both.")
   }
 
   let footer = if footer-text != none { footer-text } else if footer_text != none { footer_text } else { "" }
@@ -244,19 +132,6 @@
   } else {
     true
   }
-  let lighter = if percent-lighter != none {
-    percent-lighter
-  } else if percent_lighter != none {
-    percent_lighter
-  } else {
-    90%
-  }
-
-  // Validate values (only affects invalid inputs).
-  let lighter-ratio = as-ratio(lighter)
-  if lighter-ratio < 0% or lighter-ratio > 100% {
-    panic("percent-lighter must be between 0% and 100%.")
-  }
 
   // Update global state with user configuration
   state-header-font-size.update(font-size-headers)
@@ -266,7 +141,6 @@
   state-table-font-size.update(table-font-size)
   state-reset-equation.update(reset-eq)
   state-footer-text.update(footer)
-  state-percent-lighter.update(lighter-ratio)
 
   let numbering_format = if global-eq { "(1)" } else { none }
   state-equation-numbering.update(numbering_format)
@@ -279,9 +153,9 @@
   body
 }
 
-// ============================================================================
+// ===================
 // Slide Definition
-// ============================================================================
+// ======
 
 #let slide(
   // Back-compat names
@@ -314,11 +188,12 @@
     panic("Use either center_y or center-y, not both.")
   }
 
-  let headercolor = if header-color != none { header-color } else if headercolor != none { headercolor } else { blue }
-  let center_x = if center-x != none { center-x } else if center_x != none { center_x } else { false }
-  let center_y = if center-y != none { center-y } else if center_y != none { center_y } else { true }
+  // Set defaults
+  let final-header-color = if header-color != none { header-color } else if headercolor != none { headercolor } else { blue }
+  let final-center-x = if center-x != none { center-x } else if center_x != none { center_x } else { false }
+  let final-center-y = if center-y != none { center-y } else if center_y != none { center_y } else { true }
 
-  // Determine number of repetitions
+  // Determine number of repetitions using helper from utils.typ
   let actual-repeat = if repeat == auto {
     count-pauses(body)
   } else {
@@ -331,7 +206,7 @@
 
   // Generate one page for each subslide
   for subslide-index in range(1, actual-repeat + 1) {
-    // Process body content for current subslide
+    // Process body content for current subslide using helper from utils.typ
     let processed-body = process-content-for-subslide(body, subslide-index)
 
     // Generate the slide page
@@ -339,6 +214,7 @@
       state-current-subslide.update(subslide-index)
 
       // 1. Calculate Layout
+      // We manually measure the header to determine the top margin so that content doesn't overlap.
       let header-size = state-header-font-size.get()
       let has-title = title != none
       let header-em-height = if has-title { layout-header-height-title } else { layout-header-height-no-title }
@@ -360,7 +236,7 @@
         background: {
           place(slide-header(
             title,
-            headercolor,
+            final-header-color,
             state-header-font-size.get(),
             inset: layout-header-inset,
             height: header-em-height,
@@ -379,8 +255,8 @@
       set par(justify: true)
 
       // 3. Apply Slide-Specific Styles
-      let x_align = if center_x { center } else { left }
-      let y_align = if center_y { horizon } else { top }
+      let x_align = if final-center-x { center } else { left }
+      let y_align = if final-center-y { horizon } else { top }
 
       // Resolve fonts and sizes (fallback to global state if not overridden)
       let font = if slide-main-font != none { slide-main-font } else { state-main-font.get() }

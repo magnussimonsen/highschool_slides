@@ -20,13 +20,13 @@ A clean and simple slides template for Typst with built-in pause animations.
 #import "@preview/classroom-deck:0.1.0": *
 
 // For local development (in this repository), you can instead use:
-// #import "slides_lib.typ": *
+// #import "lib.typ": *
 
 // Configure the presentation
 #show: slides.with(
   ratio: "16-9",
-  main-font: "Calibri",  // Default value is can be tweaked in slides_core.typ
-  code-font: "Consolas", // Default value is can be tweaked in slides_core.typ
+  main-font: "Calibri",  // Default value is can be tweaked in core.typ
+  code-font: "Consolas", // Default value is can be tweaked in core.typ
   // Useful Windows fonts: "Calibri", "Arial"
   // Useful Windows code fonts: "Consolas", "Courier New"
   // Useful Linux fonts: "Liberation Sans", "Noto Sans", "Arial"
@@ -36,7 +36,7 @@ A clean and simple slides template for Typst with built-in pause animations.
   font-size-content: 18pt,
   footer_text: "My Presentation", // Default is an empty string
   equation_numbering_globally: true,
-  percent_lighter: 90%,
+  equation_numbering_globally: true,
 )
 
 // Create slides
@@ -92,7 +92,7 @@ Pre-defined colors for headers and focusboxes:
   footer_text: "",                      // Footer text
   reset_equation_numbers_per_slide: true,
   equation_numbering_globally: true,    // Enable equation numbers
-  percent_lighter: 90%,                 // Focusbox background lightness
+  equation_numbering_globally: true,    // Enable equation numbers
 )
 ```
 
@@ -191,12 +191,12 @@ Slides without `#pause` markers work exactly as before - all content appears at 
 ## File Structure
 
 ```
-slidesLib/
-├── slides_lib.typ      # Main entry point (import this)
-├── slides_core.typ     # Core slide functionality
-├── slides_utils.typ    # Utility functions
-├── LICENSE             # MIT License
-└── README.md           # This file
+slides/
+├── lib.typ           # Main entry point (import this)
+├── core.typ          # Core slide functionality
+├── utils.typ         # Utility functions & Animation logic
+├── LICENSE           # MIT License
+└── README.md         # This file
 ```
 
 ## License
