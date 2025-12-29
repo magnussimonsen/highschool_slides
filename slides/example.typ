@@ -12,6 +12,11 @@
   // The defult colors are: blue, red, green, cyan, magenta, yellow, gray, white, and can be used directly, and they can be customized in utils.typ
 )
 
+// ============ SLIDE 0: Custom Header Text Color ============
+#slide(headercolor: white, title: "White Header with Black Text", textcolor: black)[
+  This slide uses a white header with black text.
+]
+
 // SLIDE 1: Focus Boxes and Equations
 #slide(headercolor: blue, title: "Focus Boxes and Equations")[
   #focusbox(bg: green, width: 60%, center_x: true, center_y: true)[

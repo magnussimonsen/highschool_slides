@@ -8,15 +8,15 @@
 // Static colors (no state dependency)
 #let white = rgb("FFFFFF")     
 #let base_gray = rgb("#7c7c7c")
-#let gray = base_gray.darken(20%)       
+#let gray = base_gray.darken(25%)       
 #let base_blue = rgb("#0000FF")  
-#let blue = base_blue.darken(10%)
+#let blue = base_blue.darken(25%)
 #let base_red = rgb("#FF0000")
-#let red = base_red.darken(30%)
+#let red = base_red.darken(25%)
 #let base_green = rgb("#00FF00")
-#let green = base_green.darken(40%)
+#let green = base_green.darken(25%)
 #let base_cyan = rgb("#22d2d2")
-#let cyan = base_cyan.darken(10%)
+#let cyan = base_cyan.darken(5%)
 #let base_magenta = rgb("#FF00FF")
 #let magenta = base_magenta.darken(20%)
 #let base_yellow = rgb("#FFFF00")
@@ -26,7 +26,7 @@
 // Note: Very high values (e.g. 90%) make colors almost white.
 #let blue_light = base_blue.lighten(90%)
 #let red_light = base_red.lighten(90%)
-#let green_light = base_green.lighten(80%)
+#let green_light = base_green.lighten(85%)
 #let cyan_light = base_cyan.lighten(80%)
 #let magenta_light = base_magenta.lighten(90%)
 #let yellow_light = base_yellow.lighten(90%)
@@ -43,6 +43,7 @@
   header-font-size,
   inset: .6cm,
   height: auto,
+  text-color: white,
 ) = context {
   let font-size = header-font-size
 
@@ -59,7 +60,7 @@
     height: header-height,
     inset: inset,
     if title != none {
-      text(white, weight: "regular", size: font-size)[
+      text(text-color, weight: "regular", size: font-size)[
         #h(.1cm) #title
       ]
     },

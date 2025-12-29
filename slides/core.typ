@@ -175,6 +175,7 @@
   slide-code-font-size: none,
   slide-equation-numbering: auto,
   repeat: auto, // NEW: Number of subslides (auto = auto-detect from pauses)
+  textcolor: white, // Custom header text color
   body,
 ) = {
   // Resolve aliases (panic only if the user provides both).
@@ -240,6 +241,7 @@
             state-header-font-size.get(),
             inset: layout-header-inset,
             height: header-em-height,
+            text-color: textcolor,
           ))
         },
         footer: [
